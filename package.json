@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "react-confetti": "^6.4.0",
+    "tailwindcss-filters": "^3.0.0"
+  }
+}

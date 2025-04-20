@@ -2,30 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    @apply bg-gray-100 text-gray-800;
+@layer base {
+  body {
+    /* Apply a darker gradient background for more contrast */
+    @apply bg-gradient-to-br from-black to-gray-900 text-vision-text min-h-screen font-sans;
+    /* Consider adding a system font stack similar to Apple's */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold text-vision-text; /* Adjusted weight and color */
+  }
+
+  button {
+    /* VisionOS-style button: rounded, potential gradient or subtle background */
+    @apply bg-vision-accent hover:bg-blue-600 text-white font-semibold py-2 px-5 rounded-xl transition-colors duration-200;
+    /* Remove default browser styling */
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+  }
+
+  input[type="email"], input[type="password"], input[type="text"], input[type="number"] {
+    /* Glassy input fields */
+    @apply bg-vision-card border border-vision-border rounded-lg p-3 text-vision-text placeholder-vision-text-secondary focus:outline-none focus:ring-2 focus:ring-vision-accent backdrop-blur-sm;
+  }
+
+  label {
+    @apply block text-vision-text-secondary text-sm font-medium mb-1; /* Adjusted label style */
+  }
 }
 
-h1, h2, h3, h4, h5, h6 {
-    @apply font-bold;
+/* Define a reusable glassmorphism card component */
+@layer components {
+  .glass-card {
+    @apply bg-vision-card backdrop-blur-md border border-vision-border shadow-glass rounded-2xl p-6;
+  }
 }
 
-button {
-    @apply bg-blue-500 text-white font-semibold py-2 px-4 rounded;
-}
-
-input {
-    @apply border border-gray-300 rounded-md p-2;
-}
-
-.card {
-    @apply bg-white shadow-md rounded-lg p-4 m-2;
-}
-
+/* Keep utility classes */
 .flex-center {
     @apply flex justify-center items-center;
 }
 
-.hidden {
-    @apply hidden;
-}
+/* Remove the old .card class if no longer needed or update it */
+/* .card { ... } */
