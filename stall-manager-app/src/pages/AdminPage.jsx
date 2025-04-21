@@ -10,7 +10,7 @@ const AdminPage = () => {
     const handleLogout = async () => {
         try {
             await logout();
-            history.push('/admin-login');
+            history.push('/'); // Redirect to home page
         } catch (error) {
             console.error("Failed to log out", error);
         }

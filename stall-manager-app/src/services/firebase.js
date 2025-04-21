@@ -16,7 +16,8 @@ import {
     serverTimestamp, 
     doc, 
     runTransaction, // Import runTransaction
-    Timestamp // Import Timestamp if needed for comparisons
+    Timestamp, // Import Timestamp if needed for comparisons
+    writeBatch // Import writeBatch if not using transaction for reads/writes separation
 } from "firebase/firestore"; // Import necessary v9 functions
 
 // Load environment variables
@@ -120,6 +121,79 @@ const recordSale = async (stallId, productId, quantity) => {
   }
 };
 
+// --- Record Multiple Sales in a Single Transaction ---
+const recordTransaction = async (stallId, items, paymentMethod) => {
+    if (!stallId || !Array.isArray(items) || items.length === 0 || !paymentMethod) {
+        throw new Error("Invalid transaction data provided.");
+    }
+
+    const stallRef = doc(firestore, 'stalls', stallId);
+    const salesRef = collection(firestore, 'sales');
+    const currentTimestamp = serverTimestamp(); // Get timestamp once for all sales in transaction
+
+    try {
+        await runTransaction(firestore, async (transaction) => {
+            const stallDoc = await transaction.get(stallRef);
+            if (!stallDoc.exists()) {
+                throw new Error("Stall document does not exist!");
+            }
+
+            const stallData = stallDoc.data();
+            let currentProducts = [...(stallData.products || [])]; // Clone products array
+
+            // Process each item in the cart
+            for (const item of items) {
+                const productIndex = currentProducts.findIndex(p => p.id === item.productId);
+
+                if (productIndex === -1) {
+                    throw new Error(`Product with ID ${item.productId} not found in stall.`);
+                }
+
+                const product = currentProducts[productIndex];
+
+                // Check stock if tracked
+                if (product.stockCount !== null && product.stockCount !== undefined) {
+                    if (product.stockCount < item.quantity) {
+                        throw new Error(`Insufficient stock for product ${product.name}. Available: ${product.stockCount}, Requested: ${item.quantity}`);
+                    }
+                    // Update stock in the cloned array
+                    currentProducts[productIndex] = {
+                        ...product,
+                        stockCount: product.stockCount - item.quantity
+                    };
+                }
+                 // If stock not tracked, no change needed for this product in the array
+
+                // Prepare sales record data (use price from item passed in, or re-lookup)
+                 const pricePerItem = product.price; // Use current price from DB
+                 const totalPrice = pricePerItem * item.quantity;
+
+
+                // Add sales record to the transaction
+                transaction.set(doc(salesRef), { // Create a new doc in sales collection
+                    stallId: stallId,
+                    productId: item.productId,
+                    quantity: item.quantity,
+                    pricePerItem: pricePerItem,
+                    totalPrice: totalPrice,
+                    paymentMethod: paymentMethod, // Record the payment method
+                    timestamp: currentTimestamp // Use the same timestamp for all items in transaction
+                });
+            }
+
+            // After processing all items, update the stall document with the final products array
+            transaction.update(stallRef, { products: currentProducts });
+        });
+
+        console.log("Multi-item transaction successfully committed!");
+
+    } catch (error) {
+        console.error("Multi-item transaction failed: ", error);
+        // Re-throw the error so the calling function (SellerPage) knows it failed
+        throw error;
+    }
+};
+
 // Function to get all sales for a specific stall
 const getSalesForStall = async (stallId) => {
     if (!stallId) return [];
@@ -139,6 +213,7 @@ export {
     firestore, 
     getStallDetails, 
     recordSale, // Updated
+    recordTransaction, // Export the new function
     getSalesForStall, // New
     signInWithEmailAndPassword, 
     signOut, 
