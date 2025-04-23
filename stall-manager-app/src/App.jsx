@@ -4,7 +4,12 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import AdminPage from './pages/AdminPage';
 import SellerPage from './pages/SellerPage';
 import AdminLogin from './components/AdminLogin';
-import SellerLogin from './components/SellerLogin'; // Import SellerLogin
+import SellerLogin from './components/SellerLogin';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import DeveloperInfo from './pages/DeveloperInfo';
+import NotFound from './pages/NotFound';
+import Layout from './components/Layout';
 
 // PrivateRoute component to protect routes requiring any authenticated user
 const PrivateRoute = ({ component: Component, ...rest }) => {
@@ -14,45 +19,69 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     <Route
       {...rest}
       render={props => {
-        // Redirect to admin login if no user, could be changed later
-        // if separate login destinations are needed.
         return currentUser ? <Component {...props} /> : <Redirect to="/admin-login" />;
       }}
     ></Route>
   );
 };
 
-// TODO: Add specific AdminPrivateRoute if needed later to check for admin claims
+// Home page component
+const HomePage = () => (
+  <div className="flex-center min-h-screen py-10">
+    <div className="text-center glass-card p-10 max-w-lg">
+      <h1 className="text-4xl font-semibold mb-6">Welcome to the Church Fundraising Stall Manager</h1>
+      <p className="text-vision-text-secondary mb-8">
+        A simple and efficient way to manage your church fundraising stalls and track sales.
+      </p>
+      <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+        <a href="/admin-login" className="bg-vision-accent hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-200 no-underline text-center">
+          Admin Login
+        </a>
+        <a href="/seller-login" className="bg-vision-accent hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-200 no-underline text-center">
+          Seller Login
+        </a>
+      </div>
+    </div>
+  </div>
+);
+
+// Home page with layout
+const HomePageWithLayout = () => (
+  <Layout>
+    <HomePage />
+  </Layout>
+);
+
+// Not found page with layout
+const NotFoundWithLayout = () => (
+  <Layout>
+    <NotFound />
+  </Layout>
+);
 
 const App = () => {
   return (
     <AuthProvider>
       <Router>
         <Switch>
+          {/* Auth routes */}
           <Route path="/admin-login" component={AdminLogin} />
-          <Route path="/seller-login" component={SellerLogin} /> {/* Add route for SellerLogin */}
+          <Route path="/seller-login" component={SellerLogin} />
+          
+          {/* Protected routes */}
           <PrivateRoute path="/admin" component={AdminPage} />
-          {/* Protect the SellerPage, route changed from /seller/:pin */}
-          <PrivateRoute path="/seller" component={SellerPage} /> 
-          <Route path="/" exact>
-            {/* Apply flex-center and adjust text styling */}
-            <div className="flex-center min-h-screen">
-              <div className="text-center glass-card p-10">
-                <h1 className="text-4xl font-semibold mb-6">Welcome to the Stall Manager</h1>
-                <div className="flex justify-center space-x-6">
-                  {/* Use button styles for links */}
-                  <a href="/admin-login" className="bg-vision-accent hover:bg-blue-600 text-white font-semibold py-2 px-5 rounded-xl transition-colors duration-200 no-underline">
-                    Admin Login
-                  </a>
-                  <a href="/seller-login" className="bg-vision-accent hover:bg-blue-600 text-white font-semibold py-2 px-5 rounded-xl transition-colors duration-200 no-underline">
-                    Seller Login
-                  </a>
-                </div>
-              </div>
-            </div>
-          </Route>
-          {/* Add a fallback or 404 route if needed */}
-          {/* <Route path="*" component={NotFoundPage} /> */}
+          <PrivateRoute path="/seller" component={SellerPage} />
+          
+          {/* Public routes */}
+          <Route path="/privacy-policy" component={PrivacyPolicy} />
+          <Route path="/terms-of-service" component={TermsOfService} />
+          <Route path="/developer-info" component={DeveloperInfo} />
+          
+          {/* Home page */}
+          <Route path="/" exact component={HomePageWithLayout} />
+          
+          {/* 404 page */}
+          <Route path="*" component={NotFoundWithLayout} />
         </Switch>
       </Router>
     </AuthProvider>
