@@ -2,8 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { firestore, getSalesForStall } from '../services/firebase'; // Import getSalesForStall
 // Import collection, getDocs, query for fetching all sales
 import { collection, addDoc, onSnapshot, doc, updateDoc, arrayUnion, getDocs, query as firestoreQuery } from 'firebase/firestore';
+import Button from './Button';
+import Card from './Card';
+import Input from './Input';
+import LoadingSpinner from './LoadingSpinner';
 
-const AdminDashboard = () => {
+const AdminDashboard = ({ handleLogout }) => {
     const [stalls, setStalls] = useState([]);
     const [stallName, setStallName] = useState('');
     const [productNameMap, setProductNameMap] = useState({}); // Use a map for product names per stall
@@ -226,156 +230,194 @@ const AdminDashboard = () => {
 
 
     return (
-        // Add padding to the main container
-        <div className="p-6 md:p-10">
-            <h1 className="text-3xl font-semibold mb-4 text-center">Admin Dashboard</h1>
+        <div className="container mx-auto">
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-3xl font-semibold text-light-text dark:text-dark-text">Admin Dashboard</h1>
+                {handleLogout && (
+                    <Button
+                        onClick={handleLogout}
+                        variant="danger"
+                    >
+                        Logout
+                    </Button>
+                )}
+            </div>
 
             {/* Summary Section */}
-            <div className="mb-8 glass-card max-w-lg mx-auto p-4 flex justify-between items-center">
-                 <div>
-                    <h2 className="text-xl font-medium mb-2">Overall Summary</h2>
-                    <p className="text-lg">
-                        Total Sales Across All Stalls: <span className="font-semibold text-green-400">£{totalOverallSales.toFixed(2)}</span>
-                    </p>
-                 </div>
-                 <button
-                    onClick={exportSalesToCSV}
-                    disabled={loadingSales}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50"
-                 >
-                    {loadingSales ? 'Exporting...' : 'Export All Sales (CSV)'}
-                 </button>
-            </div>
+            <Card
+                className="mb-8"
+                elevation="normal"
+            >
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h2 className="text-xl font-medium mb-2 text-light-text dark:text-dark-text">Overall Summary</h2>
+                        <p className="text-lg text-light-text dark:text-dark-text">
+                            Total Sales: <span className="font-semibold text-green-600 dark:text-green-400">£{totalOverallSales.toFixed(2)}</span>
+                        </p>
+                    </div>
+                    <Button
+                        onClick={exportSalesToCSV}
+                        disabled={loadingSales}
+                        variant="primary"
+                        className="flex items-center"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        {loadingSales ? 'Exporting...' : 'Export All Sales (CSV)'}
+                    </Button>
+                </div>
+            </Card>
 
-
-            {/* Add Stall Form - styled */}
-            <div className="mb-8 glass-card max-w-lg mx-auto">
-                <h2 className="text-xl font-medium mb-4">Add New Stall</h2>
+            {/* Add Stall Form */}
+            <Card
+                className="mb-8 max-w-lg mx-auto"
+                title="Add New Stall"
+                elevation="normal"
+            >
                 <form onSubmit={handleAddStall} className="flex items-center space-x-3">
-                    <input
-                        type="text"
-                        value={stallName}
-                        onChange={(e) => setStallName(e.target.value)}
-                        placeholder="New Stall Name"
-                        className="flex-grow" // Input takes remaining space
-                        required
-                    />
-                    {/* Button uses global style */}
-                    <button type="submit">Add Stall</button>
+                    <div className="flex-grow mb-0">
+                        <Input
+                            type="text"
+                            value={stallName}
+                            onChange={(e) => setStallName(e.target.value)}
+                            placeholder="New Stall Name"
+                            required
+                            className="mb-0"
+                        />
+                    </div>
+                    <Button type="submit" variant="primary">
+                        Add Stall
+                    </Button>
                 </form>
-            </div>
+            </Card>
 
             {/* Stalls Grid */}
-            {loadingSales && !stalls.length ? ( // Show loading only if stalls aren't loaded yet
-                <div className="text-center text-xl">Loading stall data...</div>
+            {loadingSales && !stalls.length ? (
+                <div className="flex flex-col justify-center items-center py-12">
+                    <LoadingSpinner size="large" message="Loading stall data..." />
+                </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {stalls.map(stall => {
                         const totalRaised = calculateTotalRaised(stall.id);
                         const sales = stallSales[stall.id] || [];
                         return (
-                            <div key={stall.id} className="glass-card flex flex-col space-y-4">
-                                <div className="flex justify-between items-start border-b border-vision-border pb-2 mb-2">
-                                    <h2 className="text-2xl font-semibold">{stall.name}</h2>
+                            <Card key={stall.id} className="flex flex-col space-y-4" padding="normal" elevation="normal">
+                                <div className="flex justify-between items-start border-b border-light-border dark:border-dark-border pb-3 mb-2">
+                                    <h2 className="text-2xl font-semibold text-light-text dark:text-dark-text">{stall.name}</h2>
                                     {/* Display Total Raised */}
                                     <div className="text-right">
-                                        <span className="block text-sm text-vision-text-secondary">Total Raised</span>
-                                        <span className="block text-lg font-semibold text-green-400">£{totalRaised.toFixed(2)}</span>
+                                        <span className="block text-sm text-light-text-secondary dark:text-dark-text-secondary">Total Raised</span>
+                                        <span className="block text-lg font-semibold text-green-600 dark:text-green-400">£{totalRaised.toFixed(2)}</span>
                                     </div>
                                 </div>
 
                                 {/* Add Product Form */}
                                 <form onSubmit={(e) => { e.preventDefault(); handleAddProduct(stall.id); }} className="space-y-3">
-                                    <input
+                                    <Input
                                         type="text"
                                         value={productNameMap[stall.id] || ''}
                                         onChange={(e) => handleInputChange(setProductNameMap, stall.id, e.target.value)}
                                         placeholder="Product Name"
-                                        className="w-full"
                                         required
                                     />
                                     <div className="flex space-x-3">
-                                        <input
-                                            type="number"
-                                            step="0.01"
-                                            min="0"
-                                            value={productPriceMap[stall.id] || ''}
-                                            onChange={(e) => handleInputChange(setProductPriceMap, stall.id, e.target.value)}
-                                            placeholder="Price (£)"
-                                            className="w-1/2"
-                                            required
-                                        />
-                                        <input
-                                            type="number"
-                                            step="1"
-                                            min="0"
-                                            value={productStockMap[stall.id] || ''}
-                                            onChange={(e) => handleInputChange(setProductStockMap, stall.id, e.target.value)}
-                                            placeholder="Stock (Optional)"
-                                            className="w-1/2"
-                                        />
+                                        <div className="w-1/2">
+                                            <Input
+                                                type="number"
+                                                step="0.01"
+                                                min="0"
+                                                value={productPriceMap[stall.id] || ''}
+                                                onChange={(e) => handleInputChange(setProductPriceMap, stall.id, e.target.value)}
+                                                placeholder="Price (£)"
+                                                required
+                                                className="mb-0"
+                                            />
+                                        </div>
+                                        <div className="w-1/2">
+                                            <Input
+                                                type="number"
+                                                step="1"
+                                                min="0"
+                                                value={productStockMap[stall.id] || ''}
+                                                onChange={(e) => handleInputChange(setProductStockMap, stall.id, e.target.value)}
+                                                placeholder="Stock (Optional)"
+                                                className="mb-0"
+                                            />
+                                        </div>
                                     </div>
-                                    <button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-sm py-2 px-3">Add Product</button>
+                                    <Button type="submit" variant="success" fullWidth>Add Product</Button>
                                 </form>
 
                                 {/* Assign Seller PIN Form */}
                                 <form onSubmit={(e) => { e.preventDefault(); handleAssignSeller(stall.id); }} className="flex items-center space-x-3">
-                                    <input
-                                        type="text"
-                                        value={sellerPinMap[stall.id] || ''}
-                                        onChange={(e) => handleInputChange(setSellerPinMap, stall.id, e.target.value)}
-                                        placeholder="Seller PIN (4 digits)"
-                                        className="flex-grow"
-                                        maxLength="4"
-                                        pattern="\d{4}" // Basic pattern validation
-                                        title="PIN must be 4 digits"
-                                    />
-                                    {/* Adjusted button style/text */}
-                                    <button type="submit" className="bg-yellow-500 hover:bg-yellow-600 text-sm py-1 px-3">Set PIN</button>
+                                    <div className="flex-grow mb-0">
+                                        <Input
+                                            type="text"
+                                            value={sellerPinMap[stall.id] || ''}
+                                            onChange={(e) => handleInputChange(setSellerPinMap, stall.id, e.target.value)}
+                                            placeholder="Seller PIN (4 digits)"
+                                            maxLength="4"
+                                            pattern="\d{4}" // Basic pattern validation
+                                            title="PIN must be 4 digits"
+                                            className="mb-0"
+                                        />
+                                    </div>
+                                    <Button 
+                                        type="submit" 
+                                        variant="secondary"
+                                    >
+                                        Set PIN
+                                    </Button>
                                 </form>
 
-                                <p className="text-sm text-vision-text-secondary">Current Seller PIN: {stall.sellerPin || 'Not Assigned'}</p>
+                                <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                                    Current Seller PIN: <span className="font-medium">{stall.sellerPin || 'Not Assigned'}</span>
+                                </p>
 
                                 <div>
-                                    <h3 className="text-lg font-medium mb-2">Products:</h3>
-                                    <ul className="list-none space-y-2 text-vision-text-secondary">
+                                    <h3 className="text-lg font-medium mb-2 text-light-text dark:text-dark-text">Products:</h3>
+                                    <ul className="list-none space-y-2 text-light-text-secondary dark:text-dark-text-secondary">
                                         {Array.isArray(stall.products) && stall.products.length > 0 ? (
                                             stall.products.map((product) => (
                                                 product && product.price !== undefined && product.price !== null ? (
-                                                    <li key={product.id || product.name} className="flex justify-between items-center text-sm p-2 bg-black bg-opacity-10 rounded-md">
-                                                        <span>{product.name || 'Unnamed Product'}</span>
-                                                        <span className="font-medium text-vision-text">£{typeof product.price === 'number' ? product.price.toFixed(2) : 'N/A'}</span>
+                                                    <li key={product.id || product.name} className="flex justify-between items-center text-sm p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                                        <span className="text-light-text dark:text-dark-text">{product.name || 'Unnamed Product'}</span>
+                                                        <span className="font-medium text-primary-600 dark:text-primary-400">£{typeof product.price === 'number' ? product.price.toFixed(2) : 'N/A'}</span>
                                                         {/* Display stock count */}
                                                         {product.stockCount !== null && product.stockCount !== undefined ? (
-                                                            <span className={`text-xs px-2 py-0.5 rounded-full ${product.stockCount <= 0 ? 'bg-red-900 bg-opacity-70 text-red-200' : 'bg-blue-900 bg-opacity-50'}`}>
+                                                            <span className={`text-xs px-2 py-0.5 rounded-full ${product.stockCount <= 0 ? 'bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-200' : 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-200'}`}>
                                                                 Stock: {product.stockCount}
                                                             </span>
                                                         ) : (
-                                                            <span className="text-xs italic">Stock N/A</span>
+                                                            <span className="text-xs italic text-light-text-secondary dark:text-dark-text-secondary">Stock N/A</span>
                                                         )}
                                                     </li>
                                                 ) : null
                                             ))
                                         ) : (
-                                            <li className="italic text-xs">No products added yet.</li>
+                                            <li className="italic text-xs text-light-text-secondary dark:text-dark-text-secondary p-2">No products added yet.</li>
                                         )}
                                     </ul>
                                 </div>
 
                                 {/* Sales List Section */}
-                                <div className="mt-4 pt-4 border-t border-vision-border">
-                                    <h3 className="text-lg font-medium mb-2">Recent Sales:</h3>
-                                    {loadingSales && !sales.length ? ( // Indicate loading sales for this specific stall
-                                        <p className="italic text-xs text-vision-text-secondary">Loading sales...</p>
+                                <div className="mt-4 pt-4 border-t border-light-border dark:border-dark-border">
+                                    <h3 className="text-lg font-medium mb-2 text-light-text dark:text-dark-text">Recent Sales:</h3>
+                                    {loadingSales && !sales.length ? (
+                                        <div className="flex items-center justify-center py-3">
+                                            <LoadingSpinner size="small" message="Loading sales..." />
+                                        </div>
                                     ) : sales.length > 0 ? (
-                                        <ul className="list-none space-y-2 max-h-48 overflow-y-auto pr-2"> {/* Limit height and add scroll */}
+                                        <ul className="list-none space-y-2 max-h-48 overflow-y-auto pr-2">
                                             {sales.map(sale => (
-                                                <li key={sale.id} className="text-xs p-2 bg-black bg-opacity-20 rounded-md">
+                                                <li key={sale.id} className="text-xs p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                                                     <div className="flex justify-between items-center mb-1">
-                                                        <span className="font-medium text-vision-text">{getProductName(stall, sale.productId)}</span>
-                                                        <span className="font-semibold text-green-300">+£{(sale.totalPrice || 0).toFixed(2)}</span>
+                                                        <span className="font-medium text-light-text dark:text-dark-text">{getProductName(stall, sale.productId)}</span>
+                                                        <span className="font-semibold text-green-600 dark:text-green-400">+£{(sale.totalPrice || 0).toFixed(2)}</span>
                                                     </div>
-                                                    <div className="flex justify-between items-center text-vision-text-secondary">
+                                                    <div className="flex justify-between items-center text-light-text-secondary dark:text-dark-text-secondary">
                                                         <span>Qty: {sale.quantity || 1} @ £{(sale.pricePerItem || 0).toFixed(2)}</span>
                                                         <span>{formatTimestamp(sale.timestamp)}</span>
                                                     </div>
@@ -383,10 +425,10 @@ const AdminDashboard = () => {
                                             ))}
                                         </ul>
                                     ) : (
-                                        <p className="italic text-xs text-vision-text-secondary">No sales recorded yet.</p>
+                                        <p className="italic text-xs text-light-text-secondary dark:text-dark-text-secondary">No sales recorded yet.</p>
                                     )}
                                 </div>
-                            </div>
+                            </Card>
                         );
                     })}
                 </div>
