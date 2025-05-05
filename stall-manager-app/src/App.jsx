@@ -119,7 +119,7 @@ const App = () => {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <Router>
+        <Router basename={process.env.PUBLIC_URL || ''}>
           <Switch>
             {/* Auth routes */}
             <Route path="/admin-login" component={AdminLogin} />
