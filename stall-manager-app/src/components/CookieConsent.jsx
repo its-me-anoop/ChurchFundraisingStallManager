@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Button from './Button';
 
 const CookieConsent = () => {
   const [visible, setVisible] = useState(false);
@@ -30,27 +31,29 @@ const CookieConsent = () => {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 p-4">
-      <div className="glass-card max-w-4xl mx-auto p-4 md:p-6 flex flex-col md:flex-row items-center justify-between">
+      <div className="bg-light-card dark:bg-dark-card backdrop-blur-md border border-light-border dark:border-dark-border shadow-light dark:shadow-dark rounded-xl max-w-4xl mx-auto p-4 md:p-6 flex flex-col md:flex-row items-center justify-between transition-colors duration-200">
         <div className="mb-4 md:mb-0 md:mr-6">
-          <h3 className="text-lg font-semibold mb-2">Cookie Consent</h3>
-          <p className="text-vision-text-secondary text-sm">
+          <h3 className="text-lg font-semibold mb-2 text-light-text dark:text-dark-text">Cookie Consent</h3>
+          <p className="text-light-text-secondary dark:text-dark-text-secondary text-sm">
             We use cookies to enhance your browsing experience, serve personalized ads or content, and analyze our traffic. 
             By clicking "Accept All", you consent to our use of cookies.
           </p>
         </div>
         <div className="flex space-x-3">
-          <button
+          <Button
             onClick={handleDecline}
-            className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 text-sm"
+            variant="secondary"
+            size="small"
           >
             Decline
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleAccept}
-            className="bg-vision-accent hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 text-sm"
+            variant="primary"
+            size="small"
           >
             Accept All
-          </button>
+          </Button>
         </div>
       </div>
     </div>

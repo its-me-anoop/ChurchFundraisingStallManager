@@ -1,13 +1,4 @@
-const fs = require('fs');
-const path = require('path');
-
-// Create build directory if it doesn't exist
-if (!fs.existsSync('build')) {
-  fs.mkdirSync('build', { recursive: true });
-}
-
-// Create a simple static page
-const htmlContent = `<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -67,8 +58,4 @@ const htmlContent = `<!DOCTYPE html>
     &copy; 2025 Church Fundraising Stall Manager
   </footer>
 </body>
-</html>`;
-
-fs.writeFileSync(path.join('build', 'index.html'), htmlContent);
-
-console.log('Static build completed successfully!');
+</html>

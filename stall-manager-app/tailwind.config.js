@@ -1,15 +1,38 @@
 module.exports = {
   purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: 'class', // Enable dark mode with class strategy
   theme: {
     extend: {
       colors: {
-        'vision-bg': 'rgba(20, 20, 20, 0.7)', // Semi-transparent dark background
-        'vision-card': 'rgba(50, 50, 50, 0.6)', // Slightly lighter card background
-        'vision-border': 'rgba(255, 255, 255, 0.2)', // Subtle white border
-        'vision-text': '#EAEAEA', // Light text color
-        'vision-text-secondary': '#A0A0A0', // Secondary text color
-        'vision-accent': '#0A84FF', // Apple's blue accent
+        // Light theme colors
+        'primary': {
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          200: '#bae6fd',
+          300: '#7dd3fc',
+          400: '#38bdf8',
+          500: '#0ea5e9',
+          600: '#0284c7',
+          700: '#0369a1',
+          800: '#075985',
+          900: '#0c4a6e',
+          950: '#082f49',
+        },
+        'light': {
+          'bg': '#f8fafc', // Light background
+          'card': '#ffffff', // Card background
+          'border': '#e2e8f0', // Border color
+          'text': '#334155', // Text color
+          'text-secondary': '#64748b', // Secondary text
+        },
+        // Dark theme colors
+        'dark': {
+          'bg': '#0f172a', // Dark background
+          'card': '#1e293b', // Card background
+          'border': '#334155', // Border color
+          'text': '#f1f5f9', // Text color
+          'text-secondary': '#94a3b8', // Secondary text
+        },
       },
       borderRadius: {
         'xl': '1rem', // More pronounced rounding
@@ -17,7 +40,10 @@ module.exports = {
         '3xl': '2rem',
       },
       boxShadow: {
-        'glass': '0 8px 32px 0 rgba( 31, 38, 135, 0.37 )', // Example shadow for glass effect
+        'light': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        'dark': '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.18)',
+        'glass-light': '0 8px 32px 0 rgba(31, 38, 135, 0.1)',
+        'glass-dark': '0 8px 32px 0 rgba(0, 0, 0, 0.3)',
       },
       backdropBlur: {
         'xs': '2px',
@@ -30,12 +56,10 @@ module.exports = {
   },
   variants: {
     extend: {
-      // backdropBlur is now core, no need to extend variants explicitly for it
-      // unless you need other variants like focus-within etc.
+      backgroundColor: ['dark'],
+      textColor: ['dark'],
+      borderColor: ['dark'],
     },
   },
-  plugins: [
-    // Remove the deprecated plugin
-    // require('tailwindcss-filters'),
-  ],
+  plugins: [],
 }

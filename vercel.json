@@ -1,4 +1,1 @@
-{
-  "buildCommand": "node static-build.js",
-  "outputDirectory": "build"
-}
+{}

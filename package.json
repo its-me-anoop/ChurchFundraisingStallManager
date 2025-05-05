@@ -1,19 +1,5 @@
 {
-  "name": "church-fundraising-stall-manager",
-  "version": "1.0.0",
-  "description": "A simple stall manager app for a church fundraising event.",
-  "engines": {
-    "node": "18.x"
-  },
-  "type": "commonjs",
-  "scripts": {
-    "start": "node static-build.js && serve build",
-    "build": "node static-build.js",
-    "test": "echo 'No tests specified'",
-    "vercel-build": "node static-build.js"
-  },
-  "dependencies": {
-    "serve": "^14.0.0"
-  },
-  "license": "MIT"
+  "name": "static-placeholder",
+  "private": true,
+  "version": "1.0.0"
 }

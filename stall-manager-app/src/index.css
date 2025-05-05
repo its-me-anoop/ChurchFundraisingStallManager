@@ -4,46 +4,54 @@
 
 @layer base {
   body {
-    /* Apply a darker gradient background for more contrast */
-    @apply bg-gradient-to-br from-black to-gray-900 text-vision-text min-h-screen font-sans;
-    /* Consider adding a system font stack similar to Apple's */
+    /* Apply theme-aware background */
+    @apply bg-light-bg dark:bg-dark-bg text-light-text dark:text-dark-text min-h-screen font-sans;
+    /* System font stack */
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold text-vision-text; /* Adjusted weight and color */
+    @apply font-semibold text-light-text dark:text-dark-text; /* Theme-aware text */
   }
 
-  button {
-    /* VisionOS-style button: rounded, potential gradient or subtle background */
-    @apply bg-vision-accent hover:bg-blue-600 text-white font-semibold py-2 px-5 rounded-xl transition-colors duration-200;
-    /* Remove default browser styling */
+  /* Base button styles handled by Button component */
+  button:not([class]) {
+    @apply bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 text-white font-semibold py-2 px-5 rounded-xl transition-colors duration-200;
     -webkit-appearance: none;
     appearance: none;
     border: none;
   }
 
   input[type="email"], input[type="password"], input[type="text"], input[type="number"] {
-    /* Glassy input fields */
-    @apply bg-vision-card border border-vision-border rounded-lg p-3 text-vision-text placeholder-vision-text-secondary focus:outline-none focus:ring-2 focus:ring-vision-accent backdrop-blur-sm;
+    /* Theme-aware input fields */
+    @apply bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border rounded-lg p-3 
+           text-light-text dark:text-dark-text placeholder-light-text-secondary dark:placeholder-dark-text-secondary 
+           focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 backdrop-blur-sm;
   }
 
   label {
-    @apply block text-vision-text-secondary text-sm font-medium mb-1; /* Adjusted label style */
+    @apply block text-light-text-secondary dark:text-dark-text-secondary text-sm font-medium mb-1;
   }
 }
 
-/* Define a reusable glassmorphism card component */
+/* Define reusable card components */
 @layer components {
   .glass-card {
-    @apply bg-vision-card backdrop-blur-md border border-vision-border shadow-glass rounded-2xl p-6;
+    @apply bg-light-card dark:bg-dark-card backdrop-blur-md border border-light-border dark:border-dark-border 
+           rounded-2xl p-6 transition-colors duration-200;
+  }
+  
+  /* Apply shadows with direct CSS instead of @apply */
+  .dark .glass-card {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.18);
+  }
+  
+  :not(.dark) .glass-card {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
 }
 
-/* Keep utility classes */
+/* Utility classes */
 .flex-center {
     @apply flex justify-center items-center;
 }
-
-/* Remove the old .card class if no longer needed or update it */
-/* .card { ... } */

@@ -9,8 +9,8 @@ const Card = ({
   padding = 'normal',
   elevation = 'normal'
 }) => {
-  // Base classes
-  const baseClasses = 'glass-card rounded-2xl border border-vision-border backdrop-blur-md';
+  // Base classes - with dark mode support
+  const baseClasses = 'rounded-2xl border backdrop-blur-md bg-light-card dark:bg-dark-card border-light-border dark:border-dark-border transition-colors duration-200';
   
   // Padding classes
   const paddingClasses = {
@@ -20,11 +20,11 @@ const Card = ({
     large: 'p-8'
   };
   
-  // Elevation (shadow) classes
+  // Elevation (shadow) classes - with dark mode support
   const elevationClasses = {
     none: '',
     low: 'shadow-sm',
-    normal: 'shadow-glass',
+    normal: 'shadow-light dark:shadow-dark',
     high: 'shadow-xl'
   };
   
@@ -40,17 +40,17 @@ const Card = ({
     <div className={cardClasses}>
       {title && (
         <div className="mb-4">
-          <h3 className="text-xl font-semibold">{title}</h3>
-          {subtitle && <p className="text-vision-text-secondary text-sm mt-1">{subtitle}</p>}
+          <h3 className="text-xl font-semibold text-light-text dark:text-dark-text">{title}</h3>
+          {subtitle && <p className="text-light-text-secondary dark:text-dark-text-secondary text-sm mt-1">{subtitle}</p>}
         </div>
       )}
       
-      <div className={title ? '' : 'pt-0'}>
+      <div className={`${title ? '' : 'pt-0'} text-light-text dark:text-dark-text`}>
         {children}
       </div>
       
       {footer && (
-        <div className="mt-4 pt-4 border-t border-vision-border">
+        <div className="mt-4 pt-4 border-t border-light-border dark:border-dark-border">
           {footer}
         </div>
       )}
