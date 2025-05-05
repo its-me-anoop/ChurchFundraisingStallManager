@@ -1,6 +1,5 @@
 {
-  "framework": "create-react-app",
-  "buildCommand": null,
-  "outputDirectory": "stall-manager-app/build",
-  "rootDirectory": "stall-manager-app"
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
