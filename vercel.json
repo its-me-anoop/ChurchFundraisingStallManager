@@ -1,4 +1,4 @@
 {
-  "outputDirectory": "build",
-  "rootDirectory": "stall-manager-app"
+  "buildCommand": "cd stall-manager-app && npm install && npm run build",
+  "outputDirectory": "stall-manager-app/build"
 }
