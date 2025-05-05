@@ -31,7 +31,7 @@ const SellerPage = () => {
         };
     }, []);
 
-    const fetchStallDataAndSales = useCallback(async (pin) => {
+    const fetchStallDataAndSales = useCallback(async (pin, skipResetCart = false) => {
         setLoading(true);
         setLoadingSales(true);
         setError('');
@@ -61,11 +61,14 @@ const SellerPage = () => {
                 setLoadingSales(false);
             }
         }
-        // Reset cart when fetching new data
-        setCartItems({});
-        setPaymentMethod('Card');
-        setCashReceived('');
-        setTransactionFeedback('');
+        
+        // Only reset cart if not skipped (for initial load, but not after transaction)
+        if (!skipResetCart) {
+            setCartItems({});
+            setPaymentMethod('Card');
+            setCashReceived('');
+            setTransactionFeedback('');
+        }
     }, [history]);
 
     useEffect(() => {
@@ -191,8 +194,8 @@ const SellerPage = () => {
                         .finally(() => {
                              if (isMounted.current) setLoadingSales(false);
                         });
-                    // OPTIONAL: Re-fetch stall data if you need to show updated stock counts immediately
-                    // fetchStallDataAndSales(enteredPin);
+                    // Re-fetch stall data to update stock counts immediately
+                    fetchStallDataAndSales(enteredPin, true);
                  }
 
                 setTimeout(() => {
