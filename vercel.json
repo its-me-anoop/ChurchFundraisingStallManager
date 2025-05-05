@@ -1,1 +1,8 @@
-{}
+{
+  "buildCommand": "node build-helper.js",
+  "outputDirectory": "stall-manager-app/build",
+  "framework": null,
+  "github": {
+    "silent": true
+  }
+}

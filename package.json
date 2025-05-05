@@ -2,31 +2,13 @@
   "name": "church-fundraising-stall-manager",
   "version": "1.0.0",
   "description": "A simple stall manager app for a church fundraising event.",
-  "private": true,
-  "sideEffects": false,
   "scripts": {
-    "build": "remix build",
-    "dev": "remix dev",
-    "start": "remix-serve build",
-    "typecheck": "tsc"
+    "start": "cd stall-manager-app && npm start",
+    "build": "cd stall-manager-app && npm run build",
+    "test": "cd stall-manager-app && npm test"
   },
   "dependencies": {
-    "@remix-run/css-bundle": "2.15.3",
-    "@remix-run/node": "2.15.3",
-    "@remix-run/react": "2.15.3",
-    "@remix-run/serve": "2.15.3",
-    "@vercel/remix": "2.15.3",
-    "isbot": "^3.6.8",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  },
-  "devDependencies": {
-    "@remix-run/dev": "2.15.3",
-    "@types/react": "^18.2.20",
-    "@types/react-dom": "^18.2.7",
-    "typescript": "^5.1.6"
-  },
-  "engines": {
-    "node": ">=18.0.0"
+    "react-confetti": "^6.4.0",
+    "tailwindcss-filters": "^3.0.0"
   }
 }
