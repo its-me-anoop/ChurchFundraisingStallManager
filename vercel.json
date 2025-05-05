@@ -1,18 +1,4 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "static-build.js",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["build/**"]
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/build/index.html"
-    }
-  ]
+  "buildCommand": "node static-build.js",
+  "outputDirectory": "build"
 }
