@@ -1,5 +1,6 @@
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/stall-manager-app/$1" }
-  ]
+  "framework": null,
+  "buildCommand": "cd stall-manager-app && npm install && npm run build",
+  "outputDirectory": "stall-manager-app/build",
+  "installCommand": "cd stall-manager-app && npm install"
 }
