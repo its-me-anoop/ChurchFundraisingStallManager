@@ -1,6 +1,5 @@
 {
-  "outputDirectory": "build",
-  "projectSettings": {
-    "framework": "create-react-app"
-  }
+  "buildCommand": "npm run build",
+  "outputDirectory": "stall-manager-app/build",
+  "framework": "create-react-app"
 }
