@@ -1,5 +1,6 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "cd stall-manager-app && npm install && npm run build",
   "outputDirectory": "stall-manager-app/build",
-  "framework": "create-react-app"
+  "devCommand": "cd stall-manager-app && npm start",
+  "framework": null
 }
