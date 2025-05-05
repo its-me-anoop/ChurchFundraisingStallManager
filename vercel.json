@@ -1,4 +1,5 @@
 {
-  "buildCommand": "cp -r stall-manager-app/src . && cp -r stall-manager-app/public . && npm install && npm run build",
-  "outputDirectory": "build"
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/stall-manager-app/$1" }
+  ]
 }
