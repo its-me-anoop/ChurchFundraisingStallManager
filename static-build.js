@@ -1,0 +1,74 @@
+const fs = require('fs');
+const path = require('path');
+
+// Create build directory if it doesn't exist
+if (!fs.existsSync('build')) {
+  fs.mkdirSync('build', { recursive: true });
+}
+
+// Create a simple static page
+const htmlContent = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Church Fundraising Stall Manager</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+      color: #333;
+      background: #f8fafc;
+    }
+    h1 {
+      color: #0284c7;
+      margin-top: 40px;
+    }
+    p {
+      margin-bottom: 20px;
+    }
+    a {
+      color: #0284c7;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <h1>Church Fundraising Stall Manager</h1>
+  <div class="card">
+    <h2>Coming Soon</h2>
+    <p>Our stall management application is being prepared for deployment.</p>
+    <p>This site will allow church fundraising event organizers to:</p>
+    <ul>
+      <li>Track sales in real-time</li>
+      <li>Manage inventory across multiple stalls</li>
+      <li>Generate reports on fundraising performance</li>
+      <li>Coordinate seller activities</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2>Contact</h2>
+    <p>For more information, please contact the system administrator.</p>
+  </div>
+  <footer style="margin-top:40px;text-align:center;font-size:0.8em;color:#64748b;">
+    &copy; 2025 Church Fundraising Stall Manager
+  </footer>
+</body>
+</html>`;
+
+fs.writeFileSync(path.join('build', 'index.html'), htmlContent);
+
+console.log('Static build completed successfully!');
