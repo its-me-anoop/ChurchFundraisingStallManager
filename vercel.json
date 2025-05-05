@@ -1,6 +1,4 @@
 {
-  "buildCommand": "cd stall-manager-app && npm install && npm run build",
-  "outputDirectory": "stall-manager-app/build",
-  "devCommand": "cd stall-manager-app && npm start",
-  "framework": null
+  "buildCommand": "cp -r stall-manager-app/src . && cp -r stall-manager-app/public . && npm install && npm run build",
+  "outputDirectory": "build"
 }
