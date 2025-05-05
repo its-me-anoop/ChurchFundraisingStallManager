@@ -1,5 +1,12 @@
 {
-  "name": "static-placeholder",
-  "private": true,
-  "version": "1.0.0"
+  "name": "church-fundraising-stall-manager",
+  "version": "1.0.0",
+  "description": "A simple stall manager app for a church fundraising event.",
+  "dependencies": {
+    "@remix-run/dev": "^2.2.0",
+    "@remix-run/react": "^2.2.0", 
+    "@remix-run/serve": "^2.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
 }
