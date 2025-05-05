@@ -1,4 +1,15 @@
 {
+  "name": "church-fundraising-stall-manager",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "stall-manager-app"
+  ],
+  "scripts": {
+    "start": "cd stall-manager-app && npm start",
+    "build": "cd stall-manager-app && npm run build",
+    "test": "cd stall-manager-app && npm test"
+  },
   "dependencies": {
     "react-confetti": "^6.4.0",
     "tailwindcss-filters": "^3.0.0"
