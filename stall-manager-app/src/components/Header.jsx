@@ -36,9 +36,9 @@ const Header = ({ handleLogout }) => {
             />
           </svg>
           Church Fundraising
-          {showSimplifiedHeader && (
+          {showSimplifiedHeader && isSellerPage && (
             <span className="ml-2 text-sm font-normal bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 px-2 py-1 rounded-full">
-              {isSellerPage ? 'Seller Mode' : 'Admin Mode'}
+              Seller Mode
             </span>
           )}
         </Link>
@@ -85,7 +85,7 @@ const Header = ({ handleLogout }) => {
           
           <ThemeToggle className="mr-4" />
           
-          {isAdminPage && handleLogout && (
+          {(isAdminPage || isSellerPage) && handleLogout && (
             <button 
               onClick={handleLogout}
               className="mr-4 bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded-md text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500"
