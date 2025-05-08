@@ -20,9 +20,9 @@ const AdminPage = () => {
 
     return (
         <div className="min-h-screen flex flex-col bg-light-bg dark:bg-dark-bg transition-colors duration-200">
-            <Header />
+            <Header handleLogout={handleLogout} />
             <div className="flex-grow p-4 md:p-8">
-                <AdminDashboard handleLogout={handleLogout} />
+                <AdminDashboard />
             </div>
             <Footer />
         </div>
