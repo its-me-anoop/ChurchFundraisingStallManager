@@ -17,7 +17,9 @@ import {
     doc, 
     runTransaction, // Import runTransaction
     Timestamp, // Import Timestamp if needed for comparisons
-    writeBatch // Import writeBatch if not using transaction for reads/writes separation
+    writeBatch, // Import writeBatch if not using transaction for reads/writes separation
+    deleteDoc, // Import deleteDoc for removing entire documents
+    updateDoc // Import updateDoc for updating documents
 } from "firebase/firestore"; // Import necessary v9 functions
 
 // Load environment variables
@@ -208,15 +210,196 @@ const getSalesForStall = async (stallId) => {
     return salesData;
 };
 
+// Function to update a stall (name or other properties)
+const updateStall = async (stallId, updateData) => {
+    if (!stallId) {
+        throw new Error("No stall ID provided for update");
+    }
+    
+    const stallRef = doc(firestore, 'stalls', stallId);
+    await updateDoc(stallRef, updateData);
+    return true;
+};
+
+// Function to delete a stall
+const deleteStall = async (stallId) => {
+    if (!stallId) {
+        throw new Error("No stall ID provided for deletion");
+    }
+    
+    // Check if there are any sales for this stall
+    const salesRef = collection(firestore, 'sales');
+    const q = query(salesRef, where("stallId", "==", stallId));
+    const querySnapshot = await getDocs(q);
+    
+    if (!querySnapshot.empty) {
+        throw new Error("Cannot delete stall with existing sales records. Archive it instead.");
+    }
+    
+    const stallRef = doc(firestore, 'stalls', stallId);
+    await deleteDoc(stallRef);
+    return true;
+};
+
+// Function to update a product's stock count
+const updateProductStock = async (stallId, productId, newStockCount) => {
+    if (!stallId || !productId) {
+        throw new Error("Stall ID and Product ID are required");
+    }
+    
+    if (newStockCount < 0) {
+        throw new Error("Stock count cannot be negative");
+    }
+    
+    const stallRef = doc(firestore, 'stalls', stallId);
+    
+    try {
+        await runTransaction(firestore, async (transaction) => {
+            const stallDoc = await transaction.get(stallRef);
+            if (!stallDoc.exists()) {
+                throw new Error("Stall document does not exist!");
+            }
+            
+            const stallData = stallDoc.data();
+            const products = stallData.products || [];
+            let productFound = false;
+            
+            const updatedProducts = products.map(product => {
+                if (product.id === productId) {
+                    productFound = true;
+                    return { ...product, stockCount: newStockCount };
+                }
+                return product;
+            });
+            
+            if (!productFound) {
+                throw new Error(`Product with ID ${productId} not found in stall ${stallId}`);
+            }
+            
+            transaction.update(stallRef, { products: updatedProducts });
+        });
+        
+        return true;
+    } catch (error) {
+        console.error("Error updating product stock:", error);
+        throw error;
+    }
+};
+
+// Function to update a product (name, price, etc.)
+const updateProduct = async (stallId, productId, updateData) => {
+    if (!stallId || !productId) {
+        throw new Error("Stall ID and Product ID are required");
+    }
+    
+    const stallRef = doc(firestore, 'stalls', stallId);
+    
+    try {
+        await runTransaction(firestore, async (transaction) => {
+            const stallDoc = await transaction.get(stallRef);
+            if (!stallDoc.exists()) {
+                throw new Error("Stall document does not exist!");
+            }
+            
+            const stallData = stallDoc.data();
+            const products = stallData.products || [];
+            let productFound = false;
+            
+            const updatedProducts = products.map(product => {
+                if (product.id === productId) {
+                    productFound = true;
+                    return { ...product, ...updateData };
+                }
+                return product;
+            });
+            
+            if (!productFound) {
+                throw new Error(`Product with ID ${productId} not found in stall ${stallId}`);
+            }
+            
+            transaction.update(stallRef, { products: updatedProducts });
+        });
+        
+        return true;
+    } catch (error) {
+        console.error("Error updating product:", error);
+        throw error;
+    }
+};
+
+// Function to check if a product has any sales
+const checkProductHasSales = async (stallId, productId) => {
+    if (!stallId || !productId) {
+        throw new Error("Stall ID and Product ID are required");
+    }
+    
+    const salesRef = collection(firestore, 'sales');
+    const q = query(salesRef, 
+        where("stallId", "==", stallId),
+        where("productId", "==", productId)
+    );
+    
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty; // Return true if sales exist, false if no sales
+};
+
+// Function to remove a product (only if it has no sales)
+const removeProduct = async (stallId, productId) => {
+    if (!stallId || !productId) {
+        throw new Error("Stall ID and Product ID are required");
+    }
+    
+    // Check if the product has any sales
+    const hasSales = await checkProductHasSales(stallId, productId);
+    if (hasSales) {
+        throw new Error("Cannot remove a product that has sales records. You can update its stock to 0 instead.");
+    }
+    
+    const stallRef = doc(firestore, 'stalls', stallId);
+    
+    try {
+        await runTransaction(firestore, async (transaction) => {
+            const stallDoc = await transaction.get(stallRef);
+            if (!stallDoc.exists()) {
+                throw new Error("Stall document does not exist!");
+            }
+            
+            const stallData = stallDoc.data();
+            const products = stallData.products || [];
+            
+            // Filter out the product to remove
+            const updatedProducts = products.filter(product => product.id !== productId);
+            
+            // If the length is the same, the product wasn't found
+            if (updatedProducts.length === products.length) {
+                throw new Error(`Product with ID ${productId} not found in stall ${stallId}`);
+            }
+            
+            transaction.update(stallRef, { products: updatedProducts });
+        });
+        
+        return true;
+    } catch (error) {
+        console.error("Error removing product:", error);
+        throw error;
+    }
+};
+
 export { 
     auth, 
     firestore, 
     getStallDetails, 
-    recordSale, // Updated
-    recordTransaction, // Export the new function
-    getSalesForStall, // New
+    recordSale,
+    recordTransaction,
+    getSalesForStall,
+    updateStall, // New: Update stall properties
+    deleteStall, // New: Delete a stall
+    updateProductStock, // New: Update a product's stock count
+    updateProduct, // New: Update product properties
+    checkProductHasSales, // New: Check if a product has sales
+    removeProduct, // New: Remove a product
     signInWithEmailAndPassword, 
     signOut, 
     onAuthStateChanged,
-    signInAnonymously // Export signInAnonymously
-}; // Export the new functions
+    signInAnonymously
+};
