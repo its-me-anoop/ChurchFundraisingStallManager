@@ -4,7 +4,7 @@ import ThemeToggle from './ThemeToggle';
 import MobileMenu from './MobileMenu';
 import { useAuth } from '../contexts/AuthContext';
 
-const Header = () => {
+const Header = ({ handleLogout }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const { currentUser } = useAuth();
@@ -84,6 +84,16 @@ const Header = () => {
           )}
           
           <ThemeToggle className="mr-4" />
+          
+          {isAdminPage && handleLogout && (
+            <button 
+              onClick={handleLogout}
+              className="mr-4 bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded-md text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500"
+              aria-label="Logout"
+            >
+              Logout
+            </button>
+          )}
           
           {!showSimplifiedHeader && (
             <div className="md:hidden">

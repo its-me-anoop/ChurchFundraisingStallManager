@@ -18,7 +18,7 @@ import LoadingSpinner from './LoadingSpinner';
 import Modal from './Modal';
 import Alert from './Alert';
 
-const AdminDashboard = ({ handleLogout }) => {
+const AdminDashboard = () => {
     const [stalls, setStalls] = useState([]);
     const [stallName, setStallName] = useState('');
     const [productNameMap, setProductNameMap] = useState({}); // Use a map for product names per stall
@@ -594,16 +594,8 @@ const AdminDashboard = ({ handleLogout }) => {
                 </div>
             </Modal>
         
-            <div className="flex justify-between items-center mb-6">
+            <div className="mb-6">
                 <h1 className="text-3xl font-semibold text-light-text dark:text-dark-text">Admin Dashboard</h1>
-                {handleLogout && (
-                    <Button
-                        onClick={handleLogout}
-                        variant="danger"
-                    >
-                        Logout
-                    </Button>
-                )}
             </div>
 
             {/* Summary Section */}
