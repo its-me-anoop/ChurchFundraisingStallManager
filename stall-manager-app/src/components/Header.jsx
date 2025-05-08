@@ -85,7 +85,7 @@ const Header = ({ handleLogout }) => {
           
           <ThemeToggle className="mr-4" />
           
-          {isAdminPage && handleLogout && (
+          {(isAdminPage || isSellerPage) && handleLogout && (
             <button 
               onClick={handleLogout}
               className="mr-4 bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded-md text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500"

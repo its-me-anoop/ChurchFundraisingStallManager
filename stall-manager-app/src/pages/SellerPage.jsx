@@ -273,18 +273,12 @@ const SellerPage = () => {
 
     return (
         <div className="min-h-screen flex flex-col bg-light-bg dark:bg-dark-bg transition-colors duration-200">
-            <Header />
+            <Header handleLogout={handleLogout} />
             
             <div className="flex-grow p-4 md:p-8 flex flex-col items-center relative">
                 <div className="bg-light-card dark:bg-dark-card backdrop-blur-md border border-light-border dark:border-dark-border shadow-light dark:shadow-dark rounded-xl w-full max-w-4xl p-6 z-10 mb-6 transition-colors duration-200"> {/* Wider card */}
-                    <div className="flex justify-between items-center mb-6">
+                    <div className="mb-6">
                         <h1 className="text-2xl md:text-3xl font-bold text-light-text dark:text-dark-text">Your Stall: {stall?.name || 'Loading...'}</h1>
-                        <button
-                            onClick={handleLogout}
-                            className="bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 text-sm"
-                        >
-                            Logout
-                        </button>
                     </div>
 
                 {/* Transaction Feedback Area */}
