@@ -36,9 +36,9 @@ const Header = ({ handleLogout }) => {
             />
           </svg>
           Church Fundraising
-          {showSimplifiedHeader && (
+          {showSimplifiedHeader && isSellerPage && (
             <span className="ml-2 text-sm font-normal bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 px-2 py-1 rounded-full">
-              {isSellerPage ? 'Seller Mode' : 'Admin Mode'}
+              Seller Mode
             </span>
           )}
         </Link>
