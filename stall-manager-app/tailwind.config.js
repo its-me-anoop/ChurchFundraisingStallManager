@@ -28,7 +28,7 @@ module.exports = {
         // Dark theme colors
         'dark': {
           'bg': '#0f172a', // Dark background
-          'card': '#1e293b', // Card background
+          'card': '#111827', // Card background
           'border': '#334155', // Border color
           'text': '#f1f5f9', // Text color
           'text-secondary': '#94a3b8', // Secondary text
@@ -51,6 +51,11 @@ module.exports = {
         'md': '8px',
         'lg': '12px',
         'xl': '16px',
+      },
+      animation: {
+        'pulse-slow': 'pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'fade-in-up': 'fade-in-up 0.6s ease-out',
+        'gradient': 'gradient-shift 6s ease infinite',
       }
     },
   },

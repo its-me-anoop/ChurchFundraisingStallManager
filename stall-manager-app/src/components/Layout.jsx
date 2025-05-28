@@ -35,7 +35,7 @@ const Layout = ({ children }) => {
     <div className="flex flex-col min-h-screen bg-light-bg dark:bg-dark-bg transition-colors duration-200">
       <Header />
 
-      <main className="flex-grow px-4 py-6 container mx-auto">
+      <main className="flex-grow w-full">
         {children}
       </main>
 
