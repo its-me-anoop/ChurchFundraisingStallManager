@@ -51,6 +51,11 @@ module.exports = {
         'md': '8px',
         'lg': '12px',
         'xl': '16px',
+      },
+      animation: {
+        'pulse-slow': 'pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'fade-in-up': 'fade-in-up 0.6s ease-out',
+        'gradient': 'gradient-shift 6s ease infinite',
       }
     },
   },
