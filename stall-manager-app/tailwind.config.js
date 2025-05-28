@@ -28,7 +28,7 @@ module.exports = {
         // Dark theme colors
         'dark': {
           'bg': '#0f172a', // Dark background
-          'card': '#1e293b', // Card background
+          'card': '#111827', // Card background
           'border': '#334155', // Border color
           'text': '#f1f5f9', // Text color
           'text-secondary': '#94a3b8', // Secondary text
